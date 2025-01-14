@@ -1,0 +1,17 @@
+FROM python:3.12.8
+
+# Instead of pip or conda I decided to use uv An extremely fast Python package and project manager, written in Rust.
+# We can copy it from the official image using this next command
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+RUN apt-get install wget
+
+WORKDIR /app
+COPY ingest_csv_to_postgres.py ingest_csv_to_postgres.py
+
+# the next two lines are to copy the dependencies.
+# think of them as copying the reqs.txt file and pip installing them 
+COPY pyproject.toml pyproject.toml
+RUN uv sync
+
+ENTRYPOINT [ "uv", "run", "python", "ingest_csv_to_postgres.py" ]
