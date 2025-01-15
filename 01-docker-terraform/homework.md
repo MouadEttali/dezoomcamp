@@ -32,7 +32,7 @@ The version of pip in this image is :
 Given the following docker-compose.yaml, what is the hostname and port that pgadmin should use to connect to the postgres database?
 I'll skip copying the docker-compose.yaml from the dezoomcamp repo :
 the Solution is :
-* postgres:5433
+* postgres:5432
  
 Why : postgres being the container_name it serves as the localhost inside the "implicit" network created by grouping pgadmin and postgres in the ```services:``` field of the docker compose
 
