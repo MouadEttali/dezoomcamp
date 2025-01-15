@@ -173,3 +173,7 @@ cython_debug/
 # data
 data/
 ny_taxi_data/
+
+# terraform 
+
+.terraform/
