@@ -40,63 +40,19 @@ Why : postgres being the container_name it serves as the localhost inside the "i
 ## Question 3. Trip Segmentation Count
 During the period of October 1st 2019 (inclusive) and November 1st 2019 (exclusive), how many trips, respectively, happened:
 
-* Up to 1 mile = 104,802
+* Closest Solution 104,838; 199,013; 109,645; 27,688; 35,202
+
 
 ```sql
 SELECT 
-    COUNT(*) AS trip_count
-FROM 
-    green_taxi_data
-WHERE 
-    (lpep_pickup_datetime >= '2019-10-01 00:00:00' 
-    AND lpep_pickup_datetime < '2019-11-01 00:00:00')
-	AND trip_distance <= 1;
-```
-
-* In between 1 (exclusive) and 3 miles (inclusive) = 198,924
-```sql
-SELECT 
-    COUNT(*) AS trip_count
-FROM 
-    green_taxi_data
-WHERE 
-    (lpep_pickup_datetime >= '2019-10-01 00:00:00' 
-    AND lpep_pickup_datetime < '2019-11-01 00:00:00')
-	AND (trip_distance > 1 and trip_distance <=3);
-```
-
-* In between 3 (exclusive) and 7 miles (inclusive)= 110,612
-```sql
-SELECT 
-    COUNT(*) AS trip_count
-FROM 
-    green_taxi_data
-WHERE 
-    (lpep_pickup_datetime >= '2019-10-01 00:00:00' 
-    AND lpep_pickup_datetime < '2019-11-01 00:00:00')
-	AND (trip_distance > 1 and trip_distance <=3);
-```
-* In between 7 (exclusive) and 10 miles (inclusive)= 27,678
-```sql
-SELECT 
-    COUNT(*) AS trip_count
-FROM 
-    green_taxi_data
-WHERE 
-    (lpep_pickup_datetime >= '2019-10-01 00:00:00' 
-    AND lpep_pickup_datetime < '2019-11-01 00:00:00')
-	AND (trip_distance > 7 and trip_distance <=10);
-```
-* Over 10 miles = 35,202
-```sql
-SELECT 
-    COUNT(*) AS trip_count
-FROM 
-    green_taxi_data
-WHERE 
-    (lpep_pickup_datetime >= '2019-10-01 00:00:00' 
-    AND lpep_pickup_datetime < '2019-11-01 00:00:00')
-	AND trip_distance > 10 ;
+    SUM(CASE WHEN trip_distance <= 1 THEN 1 ELSE 0 END) AS up_to_1_mile,
+    SUM(CASE WHEN trip_distance > 1 AND trip_distance <= 3 THEN 1 ELSE 0 END) AS between_1_and_3_miles,
+    SUM(CASE WHEN trip_distance > 3 AND trip_distance <= 7 THEN 1 ELSE 0 END) AS between_3_and_7_miles,
+    SUM(CASE WHEN trip_distance > 7 AND trip_distance <= 10 THEN 1 ELSE 0 END) AS between_7_and_10_miles,
+    SUM(CASE WHEN trip_distance > 10 THEN 1 ELSE 0 END) AS over_10_miles
+FROM public.green_taxi_data
+WHERE lpep_pickup_datetime::date >= '2019-10-01'
+  AND lpep_pickup_datetime::date < '2019-11-01';
 ```
 
 ## Question 4. Longest trip for each day
